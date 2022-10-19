@@ -57,4 +57,59 @@ RSpec.describe "Merchants API" do
       expect(item[:attributes][:merchant_id]).to eq(merchant.id)
     end
   end
+
+  describe 'Search functions' do
+    describe 'Find one' do
+      it 'finds a merchant by name' do
+        hagrid = create(:merchant, name: 'Hagrid')
+        create_list(:merchant, 5)
+
+        get find_api_v1_merchants_path(name: 'Hagrid')
+        merchant = JSON.parse(response.body, symbolize_names: true)
+
+        expect(response).to be_successful
+        expect(merchant[:data][:attributes][:name]).to eq(hagrid.name)
+        expect(merchant[:data]).to be_a Hash
+      end
+
+      it 'Has partial matching' do
+        hagrid = create(:merchant, name: 'Hagrid')
+        create_list(:merchant, 5)
+
+        get find_api_v1_merchants_path(name: 'Hag')
+        merchant = JSON.parse(response.body, symbolize_names: true)
+
+        expect(response).to be_successful
+        expect(merchant[:data][:attributes][:name]).to eq(hagrid.name)
+        expect(merchant[:data]).to be_a Hash
+      end
+
+      it 'Searches are case-insensitive' do
+        hagrid = create(:merchant, name: 'Hagrid')
+        create_list(:merchant, 5)
+
+        get find_api_v1_merchants_path(name: 'hAGRID')
+        merchant = JSON.parse(response.body, symbolize_names: true)
+
+        expect(response).to be_successful
+        expect(merchant[:data][:attributes][:name]).to eq(hagrid.name)
+        expect(merchant[:data]).to be_a Hash
+      end
+    end
+
+    describe 'Find all' do
+      it 'finds multiple merchants by name' do
+        hagrid = create(:merchant, name: 'Hagrid')
+        gridlock = create(:merchant, name: 'Gridlock')
+        create_list(:merchant, 5)
+
+        get find_all_api_v1_merchants_path(name: 'grid')
+        merchant = JSON.parse(response.body, symbolize_names: true)
+
+        expect(response).to be_successful
+        expect(merchant[:data]).to be_an Array
+        expect(merchant[:data].length).to eq(2)
+      end
+    end
+  end
 end
