@@ -20,15 +20,26 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def destroy
+    Item.destroy_invoices(params[:id])
     render json: Item.delete(params[:id])
   end
 
   def find
-    
+    if (params[:max_price] || params[:min_price]) && params[:name]
+      return render status: :not_acceptable
+    end
+
+    item = Item.find_by_name_or_price(params)
+    render json: ItemSerializer.new(item)
   end
 
   def find_all
+    if (params[:max_price] || params[:min_price]) && params[:name]
+      return render status: :not_acceptable
+    end
 
+    items = Item.find_all_by_name_or_price(params)
+    render json: ItemSerializer.new(items)
   end
 
   private
@@ -40,5 +51,4 @@ class Api::V1::ItemsController < ApplicationController
   def set_item
     @item = Item.find(params[:id])
   end
-
 end
