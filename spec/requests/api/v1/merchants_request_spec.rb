@@ -43,7 +43,18 @@ RSpec.describe "Merchants API" do
     expect(merchant[:attributes][:name]).to eq(merchant_obj.name)
   end
 
-  # xit 'sends a merchants items' do
+  it 'sends a merchants items' do
+    merchant = create(:merchant) do |merchant|
+      create_list(:item, 5, merchant: merchant)
+    end
 
-  # end
+    get api_v1_merchant_items_path(merchant)
+    items = JSON.parse(response.body, symbolize_names: true)[:data]
+
+    expect(response).to be_successful
+    expect(items.length).to eq(5)
+    items.each do |item|
+      expect(item[:attributes][:merchant_id]).to eq(merchant.id)
+    end
+  end
 end
