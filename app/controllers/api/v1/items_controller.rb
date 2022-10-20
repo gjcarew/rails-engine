@@ -20,7 +20,7 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def destroy
-    Item.destroy_invoices(params[:id])
+    # InvoiceItem.destroy_invoices(params[:id])
     render json: Item.delete(params[:id])
   end
 

@@ -141,7 +141,6 @@ RSpec.describe "Items API" do
       it 'can find an item within a specified price range' do
         [*4..9].each { |price| create(:item, unit_price: price) }
         target_item = create(:item, unit_price: 5.50 )
-        # require 'pry';binding.pry
 
         get find_api_v1_items_path(max_price: 5.99, min_price: 5.25)
         item = JSON.parse(response.body, symbolize_names: true)

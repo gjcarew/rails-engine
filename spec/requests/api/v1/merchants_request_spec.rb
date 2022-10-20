@@ -58,6 +58,11 @@ RSpec.describe "Merchants API" do
     end
   end
 
+  it 'returns 404 if merchant id does not exist' do
+    get api_v1_merchant_items_path(50)
+    expect(response.status).to eq(404)
+  end
+
   describe 'Search functions' do
     describe 'Find one' do
       it 'finds a merchant by name' do
