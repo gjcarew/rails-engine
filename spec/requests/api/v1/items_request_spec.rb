@@ -156,7 +156,7 @@ RSpec.describe "Items API" do
 
         get find_api_v1_items_path(max_price: 5.99, min_price: 5.25, name: 'Whatever')
 
-        expect(response.status).to eq(406)
+        expect(response.status).to eq(400)
       end
 
       it 'returns a result when searching with just an upper or lower limit' do
@@ -188,6 +188,23 @@ RSpec.describe "Items API" do
         expect(response).to be_successful
         expect(item[:data]).to be_an Array
         expect(item[:data].length).to eq(2)
+      end
+
+      it 'find items by min price' do
+        [*4..9].each { |price| create(:item, unit_price: price) }
+
+        get find_all_api_v1_items_path(min_price: 8)
+        item = JSON.parse(response.body, symbolize_names: true)
+        expect(response).to be_successful
+        expect(item[:data]).to be_an Array
+        expect(item[:data].length).to eq(2)
+      end
+
+      it 'min price less than 0' do
+        create_list(:item, 5)
+        get find_all_api_v1_items_path(min_price: -1)
+        parsed_response = JSON.parse(response.body, symbolize_names: true)
+        expect(response.status).to eq(400)
       end
     end
   end
