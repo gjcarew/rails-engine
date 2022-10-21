@@ -8,6 +8,7 @@ class Item < ApplicationRecord
 
     price_more_than(params[:min_price]) # Activerecord query using scopes
       .price_less_than(params[:max_price])
+      .order(:name)
       .first
   end
 
@@ -25,8 +26,4 @@ class Item < ApplicationRecord
   scope :price_less_than, lambda { |price|
     where('unit_price <= ?', price) if price.present?
   }
-
-  # def self.destroy_invoices(item_id)
-  #   invoice_items.where('item_id = ?', item_id)
-  # end
 end

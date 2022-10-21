@@ -58,6 +58,11 @@ RSpec.describe "Merchants API" do
     end
   end
 
+  it 'returns 404 if merchant id does not exist' do
+    get api_v1_merchant_items_path(50)
+    expect(response.status).to eq(404)
+  end
+
   describe 'Search functions' do
     describe 'Find one' do
       it 'finds a merchant by name' do
@@ -94,6 +99,16 @@ RSpec.describe "Merchants API" do
         expect(response).to be_successful
         expect(merchant[:data][:attributes][:name]).to eq(hagrid.name)
         expect(merchant[:data]).to be_a Hash
+      end
+
+      describe 'edge case' do
+        it 'returns an error if no search term is entered' do
+          get find_api_v1_merchants_path(name: '')
+          expect(response.status).to eq(400)
+
+          get find_api_v1_merchants_path()
+          expect(response.status).to eq(400)
+        end
       end
     end
 
