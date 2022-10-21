@@ -4,10 +4,8 @@ class ItemSerializer
 
   def self.error(description)
     {
-      "message": "your query could not be completed",
-      "error": [
-        "#{description}",
-      ]
+      "message": "#{description}",
+      "error": {}
     }
   end
 end

@@ -8,6 +8,7 @@ class Item < ApplicationRecord
 
     price_more_than(params[:min_price]) # Activerecord query using scopes
       .price_less_than(params[:max_price])
+      .order(:name)
       .first
   end
 

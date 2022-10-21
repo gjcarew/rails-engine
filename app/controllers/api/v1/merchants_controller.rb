@@ -10,12 +10,42 @@ class Api::V1::MerchantsController < ApplicationController
   end
 
   def find
-    merchant = Merchant.find_one(params[:name])
-    render json: MerchantSerializer.new(merchant)
+    merchant = find_merchant_or_404(params)
+    return render json: { 'data': {} }, status: :not_found if merchant.nil?
+
+    if merchant.is_a?(String)
+      render json: MerchantSerializer.error(merchant), status: :bad_request
+    else
+      render json: MerchantSerializer.new(merchant)
+    end
   end
 
   def find_all
-    merchants = Merchant.find_all(params[:name])
-    render json: MerchantSerializer.new(merchants)
+    merchant = find_all_merchant_or_404(params)
+    return render json: { 'data': {} }, status: :not_found if merchant.nil?
+
+    if merchant.is_a?(String)
+      render json: MerchantSerializer.error(merchant), status: :bad_request
+    else
+      render json: MerchantSerializer.new(merchant)
+    end
+  end
+
+  private
+
+  def find_merchant_or_404(params)
+    until params[:name].present? && params[:name] != ''
+      return 'search term required'
+    end
+    
+    Merchant.find_one(params[:name])
+  end
+
+  def find_all_merchant_or_404(params)
+    until params[:name].present? && params[:name] != ''
+      return 'search term required'
+    end
+    
+    Merchant.find_all(params[:name])
   end
 end

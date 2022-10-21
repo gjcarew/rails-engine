@@ -100,6 +100,16 @@ RSpec.describe "Merchants API" do
         expect(merchant[:data][:attributes][:name]).to eq(hagrid.name)
         expect(merchant[:data]).to be_a Hash
       end
+
+      describe 'edge case' do
+        it 'returns an error if no search term is entered' do
+          get find_api_v1_merchants_path(name: '')
+          expect(response.status).to eq(400)
+
+          get find_api_v1_merchants_path()
+          expect(response.status).to eq(400)
+        end
+      end
     end
 
     describe 'Find all' do

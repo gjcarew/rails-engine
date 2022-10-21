@@ -174,6 +174,29 @@ RSpec.describe "Items API" do
         expect(response).to be_successful
         expect(item[:data][:attributes][:unit_price]).to eq(5)
       end
+
+      it 'no fragment matched' do
+        create(:item)
+        get find_api_v1_items_path(name: 'NOMATCH')
+        item = JSON.parse(response.body, symbolize_names: true)
+        expect(response.status).to eq(400)
+        expect(item).to have_key(:data)
+      end
+
+      it 'min price less than 0' do
+        create_list(:item, 5)
+        get find_api_v1_items_path(min_price: -1)
+        parsed_response = JSON.parse(response.body, symbolize_names: true)
+        expect(response.status).to eq(400)
+      end
+
+      it 'max/min price not set' do
+        get 'http://localhost:3000/api/v1/items/find?max_price='
+        expect(response.status).to eq(400)
+        
+        get 'http://localhost:3000/api/v1/items/find?min_price='
+        expect(response.status).to eq(400)
+      end
     end
 
     describe 'Find all' do
@@ -204,6 +227,11 @@ RSpec.describe "Items API" do
         create_list(:item, 5)
         get find_all_api_v1_items_path(min_price: -1)
         parsed_response = JSON.parse(response.body, symbolize_names: true)
+        expect(response.status).to eq(400)
+      end
+
+      it 'name fragment empty' do
+        get find_all_api_v1_items_path(name: '')
         expect(response.status).to eq(400)
       end
     end
