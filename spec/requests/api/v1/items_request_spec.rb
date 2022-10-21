@@ -191,10 +191,10 @@ RSpec.describe "Items API" do
       end
 
       it 'max/min price not set' do
-        get 'http://localhost:3000/api/v1/items/find?max_price='
+        get find_api_v1_items_path(min_price: '')
         expect(response.status).to eq(400)
-        
-        get 'http://localhost:3000/api/v1/items/find?min_price='
+
+        get find_api_v1_items_path(max_price: '')
         expect(response.status).to eq(400)
       end
     end

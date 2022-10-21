@@ -4,7 +4,7 @@ class ItemSerializer
 
   def self.error(description)
     {
-      "message": "#{description}",
+      "message": description.to_s,
       "error": {}
     }
   end

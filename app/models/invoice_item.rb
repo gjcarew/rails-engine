@@ -4,7 +4,9 @@ class InvoiceItem < ApplicationRecord
 
   def self.destroy_invoices(item_id)
     invoices_to_destroy = where('item_id = ?', item_id)
-    .select('invoice_id, count(')
+                          .select('invoice_id, count(invoice_id)')
+                          .group(:invoice_id)
+    
   end
 
   # Get invoice id's from records where the item id is the passed item id and that invoice does not have any other items
