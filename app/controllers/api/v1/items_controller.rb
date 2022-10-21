@@ -1,5 +1,5 @@
 class Api::V1::ItemsController < ApplicationController
-  before_action :set_item, only: %i[show update]
+  before_action :set_item, only: %i[show update destroy]
 
   def index
     render json: ItemSerializer.new(Item.all)
@@ -24,8 +24,9 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def destroy
-    # InvoiceItem.destroy_invoices(params[:id])
-    render json: Item.delete(params[:id])
+    invoices = @item.invoices
+    invoices.each(&:destroy_invoices)
+    render json: @item.destroy
   end
 
   def find
