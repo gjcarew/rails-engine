@@ -33,8 +33,8 @@ class Api::V1::ItemsController < ApplicationController
 
     return render json: ItemSerializer.error(item), status: :bad_request if item.is_a?(String)
     return render json: { "data": {} }, status: :bad_request if item.nil?
+
     render json: ItemSerializer.new(item)
-    
   end
 
   def find_all
@@ -59,11 +59,11 @@ class Api::V1::ItemsController < ApplicationController
   def find_item_or_404(params)
     return "can't filter by name and price" if (params[:max_price] || params[:min_price]) && params[:name]
     return 'max price must be >= 0' if params[:max_price].present? && params[:max_price].to_f <= 0
-    return 'max price must be present' if params[:max_price].present? && params[:max_price] == ''
+    return 'max price must be present' if params[:max_price] && params[:max_price] == ''
     return 'min price must be >= 0' if params[:min_price].present? && params[:min_price].to_f <= 0
-    return 'min price must be present' if params[:min_price].present? && params[:min_price] == ''
+    return 'min price must be present' if params[:min_price] && params[:min_price] == ''
     return "search can't be empty" unless params[:min_price] || params[:max_price] || params[:name]
-    return "include a string in your search" if params[:name] && params[:name] == ''
+    return 'include a string in your search' if params[:name] && params[:name] == ''
 
     Item.find_by_name_or_price(params)
   end
