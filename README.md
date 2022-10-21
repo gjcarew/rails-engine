@@ -74,7 +74,7 @@ The `name` query parameter is case-insensitive and supports partial matching. Wh
 ### Example
 
 ```json
-Query: localhost:3000/api/v1/merchants/find?name=ILL
+Query: localhost:3000/api/v1/merchants/find_all?name=ILL
 Response: 
 {
   "data": [
