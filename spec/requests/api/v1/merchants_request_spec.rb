@@ -71,7 +71,6 @@ RSpec.describe "Merchants API" do
 
         get find_api_v1_merchants_path(name: 'Hagrid')
         merchant = JSON.parse(response.body, symbolize_names: true)
-
         expect(response).to be_successful
         expect(merchant[:data][:attributes][:name]).to eq(hagrid.name)
         expect(merchant[:data]).to be_a Hash
