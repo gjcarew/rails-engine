@@ -5,12 +5,17 @@ class Api::V1::MerchantsController < ApplicationController
   end
 
   def show
-    merchant = Merchant.find(params[:id])
-    render json: MerchantSerializer.new(merchant)
+    if Merchant.exists?(params[:id])
+      merchant = Merchant.find(params[:id])
+      render json: MerchantSerializer.new(merchant)
+    else
+      render status: :not_found
+    end
   end
 
   def find
     merchant = find_merchant_or_404(params)
+    merchant = merchant.first if merchant.is_a?(ActiveRecord::Relation)
     return render json: { 'data': {} }, status: :not_found if merchant.nil?
 
     if merchant.is_a?(String)
@@ -21,7 +26,7 @@ class Api::V1::MerchantsController < ApplicationController
   end
 
   def find_all
-    merchant = find_all_merchant_or_404(params)
+    merchant = find_merchant_or_404(params)
     return render json: { 'data': {} }, status: :not_found if merchant.nil?
 
     if merchant.is_a?(String)
@@ -34,18 +39,8 @@ class Api::V1::MerchantsController < ApplicationController
   private
 
   def find_merchant_or_404(params)
-    until params[:name].present? && params[:name] != ''
-      return 'search term required'
-    end
-    
-    Merchant.find_one(params[:name])
-  end
+    return 'search term required' unless params[:name].present? && params[:name] != ''
 
-  def find_all_merchant_or_404(params)
-    until params[:name].present? && params[:name] != ''
-      return 'search term required'
-    end
-    
-    Merchant.find_all(params[:name])
+    Merchant.find_by_name(params[:name])
   end
 end

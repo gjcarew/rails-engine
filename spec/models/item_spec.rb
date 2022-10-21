@@ -12,7 +12,7 @@ RSpec.describe Item, type: :model do
         create_list(:item, 5)
         params = { name: 'item A' }
         result = Item.find_by_name_or_price(params)
-        expect(result).to eq(item)
+        expect(result.first).to eq(item)
       end
 
       it 'searches by min/max price if present' do
@@ -24,9 +24,9 @@ RSpec.describe Item, type: :model do
         result2 = Item.find_by_name_or_price(params2)
         result3 = Item.find_by_name_or_price(params3)
 
-        expect(result1.unit_price).to eq(10)
-        expect(result2.unit_price).to eq(1)
-        expect(result3.unit_price).to eq(5)
+        expect(result1.first.unit_price).to eq(10)
+        expect(result2.first.unit_price).to eq(1)
+        expect(result3.first.unit_price).to eq(5)
       end
     end
 
@@ -37,7 +37,7 @@ RSpec.describe Item, type: :model do
           item2 = create(:item, name: 'Kris Kringle')
           create_list(:item, 5)
           params = { name: 'ring' }
-          result = Item.find_all_by_name_or_price(params)
+          result = Item.find_by_name_or_price(params)
           expect(result).to eq([item, item2])
         end
   
@@ -46,9 +46,9 @@ RSpec.describe Item, type: :model do
           params1 = { min_price: 8 }
           params2 = { max_price: 4 }
           params3 = { min_price: 2, max_price: 6 }
-          result1 = Item.find_all_by_name_or_price(params1)
-          result2 = Item.find_all_by_name_or_price(params2)
-          result3 = Item.find_all_by_name_or_price(params3)
+          result1 = Item.find_by_name_or_price(params1)
+          result2 = Item.find_by_name_or_price(params2)
+          result3 = Item.find_by_name_or_price(params3)
   
           expect(result1.length).to eq(3)
           expect(result2.length).to eq(4)

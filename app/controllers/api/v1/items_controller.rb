@@ -32,7 +32,7 @@ class Api::V1::ItemsController < ApplicationController
   def find
     item = find_item_or_404(params)
     item = item.first if item.is_a?(ActiveRecord::Relation)
-    return render json: ItemSerializer.error(item), status: :bad_request unless item.is_a?(Item)
+    return render json: ItemSerializer.error(item), status: :bad_request if item.is_a?(String)
     return render json: { "data": {} }, status: :bad_request if item.nil?
 
     render json: ItemSerializer.new(item)
@@ -53,6 +53,8 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def set_item
+    render status: :bad_request unless Item.exists?(params[:id])
+
     @item = Item.find(params[:id])
   end
 
