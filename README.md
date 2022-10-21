@@ -3,7 +3,7 @@
 
 ![ruby-image]
 
-A RESTful rails API to allow a client to query merchant and item data. Mock data is stored in a Postgresql database. Includes search functions by name and price parameters.
+A RESTful rails API to allow a client to query merchant and item data. Mock data is stored in a Postgresql database. Includes search functions by name and price parameters. Created in a five day sprint.
 
 Reach out to me on [Linkedin](https://www.linkedin.com/in/gavin-carew-6476748a/) or  [Github](https://github.com/gjcarew) 
 
